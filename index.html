@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PiPilot AI - Your AI-Powered Pi Assistant</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;background:#f8f5ff;color:#1e1b2e}
+header{background:#6B21A8;color:#fff;padding:18px 16px}
+header h1{margin:0;font-size:22px} header h1 span{color:#FACC15}
+header p{margin:4px 0 0;opacity:.9;font-size:14px}
+.badge{display:inline-block;background:#FACC15;color:#3b1a5a;font-weight:700;padding:4px 10px;border-radius:999px;font-size:12px;margin-top:8px}
+.wrap{max-width:520px;margin:0 auto;padding:16px 16px 90px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,.06);cursor:pointer}
+.card b{font-size:15px}.card p{font-size:13px;color:#666;margin:6px 0 0}
+.screen{display:none;background:#fff;border-radius:16px;padding:16px;margin-top:12px}
+.screen.active{display:block}
+input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;margin:8px 0;box-sizing:border-box}
+button{background:#6B21A8;color:#fff;border:0;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
+button.gold{background:#F59E0B;color:#3b1a5a}
+.chip{display:inline-block;background:#ede9fe;padding:8px 12px;border-radius:999px;margin:4px 4px 0 0;font-size:13px;cursor:pointer}
+.msg{background:#f3f0ff;padding:10px;border-radius:12px;margin:8px 0;font-size:14px}
+.note{background:#fef3c7;padding:12px;border-radius:12px;font-size:13px;margin-top:12px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:12px;border-top:1px solid #eee}
+nav button{background:none;color:#6B21A8;width:auto;padding:6px;margin:0}
+.list{border:1px solid #eee;border-radius:12px;padding:12px;margin:8px 0}
+</style></head><body>
+<header><h1>PiPilot <span>AI</span></h1><p>Your AI-Powered Pi Assistant</p><span class="badge">TESTNET • pipilotai.com</span></header>
+<div class="wrap">
+<p><b>Welcome to PiPilot AI</b> — tap a tool below. Testnet prototype.</p>
+<div class="grid">
+<div class="card" onclick="show('ai')"><b>🤖 AI Assistant</b><p>Ask, plan, decide</p></div>
+<div class="card" onclick="show('biz')"><b>💼 Business Builder</b><p>Ideas to plans</p></div>
+<div class="card" onclick="show('see')"><b>📸 See It, Solve It</b><p>Photo + problem</p></div>
+<div class="card" onclick="show('money')"><b>💰 Money Finder</b><p>Side hustles</p></div>
+<div class="card" onclick="show('market')"><b>🛒 Pi Marketplace</b><p>Buy / sell in Pi</p></div>
+<div class="card" onclick="show('wallet')"><b>👛 Pi Wallet</b><p>Testnet balance</p></div>
+<div class="card" onclick="show('rewards')"><b>⭐ Rewards</b><p>1,250 points</p></div>
+<div class="card" onclick="show('profile')"><b>👤 Profile</b><p>Free / Premium</p></div>
+</div>
+<div id="ai" class="screen"><h3>AI Assistant</h3><div id="chat"><div class="msg">Hi! I'm PiPilot. Ask me to help start a business, find a side hustle, or make a plan.</div></div>
+<span class="chip" onclick="ask('Help me start a business')">Help me start a business</span><span class="chip" onclick="ask('Find me a side hustle')">Find me a side hustle</span>
+<input id="q" placeholder="Type your question..."><button onclick="ask(document.getElementById('q').value)">Send</button><button class="gold" onclick="hide()">← Back</button></div>
+<div id="biz" class="screen"><h3>Business Builder</h3><input id="idea" placeholder="Your business idea"><button onclick="genBiz()">Generate Plan</button><div id="bizOut"></div><button class="gold" onclick="hide()">← Back</button></div>
+<div id="see" class="screen"><h3>See It, Solve It</h3><textarea id="prob" rows="3" placeholder="e.g. Leaking kitchen sink..."></textarea><button onclick="genSee()">Analyze</button><div id="seeOut"></div><button class="gold" onclick="hide()">← Back</button></div>
+<div id="money" class="screen"><h3>Money Finder</h3><div class="list"><b>Freelance Design</b><br>$200-$800/mo</div><div class="list"><b>Local Delivery</b><br>$150-$600/mo</div><div class="list"><b>Tutoring</b><br>$200-$700/mo</div><div class="note">No guaranteed earnings.</div><button class="gold" onclick="hide()">← Back</button></div>
+<div id="market" class="screen"><h3>Pi Marketplace (Testnet Demo)</h3><div class="list"><b>Logo Design</b> — 5 Pi <button onclick="payDemo('Logo Design')">Pay with Pi (Demo)</button></div><div class="list"><b>Business Plan</b> — 2 Pi <button onclick="payDemo('Business Plan')">Pay with Pi (Demo)</button></div><div id="payOut"></div><div class="note">Demo only. Real Pi payments need Pi SDK + backend. Never share passphrase.</div><button class="gold" onclick="hide()">← Back</button></div>
+<div id="wallet" class="screen"><h3>Pi Wallet</h3><p><b>Testnet Balance:</b> 12.45 Pi</p><button onclick="alert('In Pi Browser, this calls Pi.authenticate()')">Login with Pi</button><div class="note">Never share passphrase or private key.</div><button class="gold" onclick="hide()">← Back</button></div>
+<div id="rewards" class="screen"><h3>Rewards</h3><p><b>Points:</b> <span id="pts">1250</span></p><button onclick="claim()">Claim +50 pts</button><button class="gold" onclick="hide()">← Back</button></div>
+<div id="profile" class="screen"><h3>Profile & Plans</h3><div class="list"><b>Free</b> — AI chat, Money Finder</div><div class="list"><b>Premium $9.99/mo</b></div><div class="list"><b>Pro $19.99/mo</b></div><button class="gold" onclick="hide()">← Back</button></div>
+</div>
+<nav><button onclick="hide()">🏠 Home</button><button onclick="show('ai')">🤖 AI</button><button onclick="show('market')">🛒 Market</button><button onclick="show('wallet')">👛 Wallet</button></nav>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function hide(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'))}
+function ask(t){if(!t)return;var c=document.getElementById('chat');c.innerHTML+='<div class="msg"><b>You:</b> '+t+'</div><div class="msg"><b>PiPilot:</b> Starter plan for '+t+'. 1) Define goal 2) 3 actions this week 3) Set budget + deadline.</div>';document.getElementById('q').value=''}
+function genBiz(){var i=document.getElementById('idea').value||'Your idea';document.getElementById('bizOut').innerHTML='<div class="msg"><b>Names:</b> '+i+' Pro, '+i+' Hub<br><b>Plan:</b> Validate with 10 people, offer 1 service, post daily, get first 3 customers.</div>'}
+function genSee(){var p=document.getElementById('prob').value||'your problem';document.getElementById('seeOut').innerHTML='<div class="msg"><b>For:</b> '+p+'<br><b>Steps:</b> Safety first, diagnose, fix or get quote.<br><b>Est:</b> $20-$150. Get 2 quotes.</div>'}
+function payDemo(x){document.getElementById('payOut').innerHTML='<div class="msg">Demo payment for '+x+' — In Pi Browser this calls Pi.createPayment() Testnet.</div>'}
+function claim(){var e=document.getElementById('pts');e.textContent=parseInt(e.textContent)+50;alert('+50 claimed!')}
+try{Pi.init({version:"2.0",sandbox:true})}catch(e){}
+</script></body></html>
