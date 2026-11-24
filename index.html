@@ -55,7 +55,37 @@ function onIncompletePaymentFound(payment) {
 <div class="card" onclick="show('wallet')"><b>👛 Pi Wallet</b><p>Testnet balance</p></div>
 <div class="card" onclick="show('rewards')"><b>⭐ Rewards</b><p>1,250 points</p></div>
 <div class="card" onclick="show('profile')"><b>👤 Profile</b><p>Free / Premium</p></div>
-</div>
+<button onclick="payWithPi()" style="background:#f59e0b;color:black;padding:14px 20px;border:none;border-radius:12px;font-size:16px;font-weight:bold;width:100%;margin:12px 0;">Pay 0.1 Test-Pi for Premium (Testnet)</button>
+<p id="pay-status" style="text-align:center;font-weight:bold;"></p>
+
+<script>
+async function payWithPi() {
+  try {
+    document.getElementById('pay-status').innerText = "Opening Pi Wallet...";
+    const payment = await Pi.createPayment({
+      amount: 0.1,
+      memo: "PiPilot AI Premium - Testnet",
+      metadata: { plan: "premium-test" }
+    }, {
+      onReadyForServerApproval: function(paymentId) {
+        document.getElementById('pay-status').innerText = "Ready for server approval: " + paymentId;
+        alert("Payment created! ID: " + paymentId + "\n\nThis is where your backend would approve it. For now, this proves the Wallet popup works.");
+      },
+      onReadyForServerCompletion: function(paymentId, txid) {
+        document.getElementById('pay-status').innerText = "Ready for completion: " + txid;
+      },
+      onCancel: function(paymentId) {
+        document.getElementById('pay-status').innerText = "Payment cancelled";
+      },
+      onError: function(error, payment) {
+        alert("Payment error: " + error.message);
+      }
+    });
+  } catch(e) {
+    alert("Payment failed — make sure you're in Pi Browser and logged in: " + e.message);
+  }
+}
+</script></div>
 <div id="ai" class="screen"><h3>AI Assistant</h3><div id="chat"><div class="msg">Hi! I'm PiPilot. Ask me to help start a business, find a side hustle, or make a plan.</div></div>
 <span class="chip" onclick="ask('Help me start a business')">Help me start a business</span><span class="chip" onclick="ask('Find me a side hustle')">Find me a side hustle</span>
 <input id="q" placeholder="Type your question..."><button onclick="ask(document.getElementById('q').value)">Send</button><button class="gold" onclick="hide()">← Back</button></div>
