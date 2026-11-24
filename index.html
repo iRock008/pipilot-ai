@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+  Pi.init({ version: "2.0", sandbox: true });
+</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PiPilot AI - Your AI-Powered Pi Assistant</title>
 <style>
 body{font-family:system-ui,sans-serif;margin:0;background:#f8f5ff;color:#1e1b2e}
@@ -26,7 +29,24 @@ nav button{background:none;color:#6B21A8;width:auto;padding:6px;margin:0}
 <header><h1>PiPilot <span>AI</span></h1><p>Your AI-Powered Pi Assistant</p><span class="badge">TESTNET • pipilotai.com</span></header>
 <div class="wrap">
 <p><b>Welcome to PiPilot AI</b> — tap a tool below. Testnet prototype.</p>
-<div class="grid">
+<button id="pi-login-btn" onclick="loginWithPi()" style="background:#7c3aed;color:white;padding:14px 20px;border:none;border-radius:12px;font-size:16px;font-weight:bold;width:100%;margin:12px 0;">Login with Pi</button>
+<p id="pi-user" style="text-align:center;font-weight:bold;"></p>
+
+<script>
+async function loginWithPi() {
+  try {
+    const scopes = ['username', 'payments'];
+    const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+    document.getElementById('pi-user').innerText = "Hello, @" + auth.user.username + " — Logged in!";
+    alert("Welcome @" + auth.user.username);
+  } catch (e) {
+    alert("Login failed — make sure you're in Pi Browser: " + e.message);
+  }
+}
+function onIncompletePaymentFound(payment) {
+  console.log("Incomplete payment:", payment);
+}
+</script><div class="grid">
 <div class="card" onclick="show('ai')"><b>🤖 AI Assistant</b><p>Ask, plan, decide</p></div>
 <div class="card" onclick="show('biz')"><b>💼 Business Builder</b><p>Ideas to plans</p></div>
 <div class="card" onclick="show('see')"><b>📸 See It, Solve It</b><p>Photo + problem</p></div>
