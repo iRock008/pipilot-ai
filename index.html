@@ -59,13 +59,15 @@ function onIncompletePaymentFound(payment) {
 <p id="pay-status" style="text-align:center;font-weight:bold;"></p>
 
 <script>
-async function payWithPi() {
+async function payWithPi(amount, itemName) {
   try {
-    document.getElementById('pay-status').innerText = "Opening Pi Wallet...";
+    amount = amount || 0.1;
+    itemName = itemName || "PiPilot AI Premium";
+    document.getElementById('pay-status').innerText = "Opening Pi Wallet for " + itemName + "...";
     const payment = await Pi.createPayment({
-      amount: 0.1,
-      memo: "PiPilot AI Premium - Testnet",
-      metadata: { plan: "premium-test" }
+      amount: amount,
+      memo: "PiPilot AI - " + itemName + " - Testnet",
+      metadata: { item: itemName }
     }, {
       onReadyForServerApproval: function(paymentId) {
         document.getElementById('pay-status').innerText = "Ready for server approval: " + paymentId;
