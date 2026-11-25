@@ -111,3 +111,52 @@ function payDemo(x){document.getElementById('payOut').innerHTML='<div class="msg
 function claim(){var e=document.getElementById('pts');e.textContent=parseInt(e.textContent)+50;alert('+50 claimed!')}
 try{Pi.init({version:"2.0",sandbox:true})}catch(e){}
 </script></body></html>
+<script>
+// REAL PAYMENT - overrides both demo versions
+async function payWithPi(amount, itemName) {
+  try {
+    amount = amount || 0.1;
+    itemName = itemName || "PiPilot AI Premium";
+    document.getElementById('pay-status').innerText = "Opening Pi Wallet for " + itemName + "...";
+    await Pi.createPayment({
+      amount: amount,
+      memo: "PiPilot AI - " + itemName + " - Testnet",
+      metadata: { item: itemName }
+    }, {
+      onReadyForServerApproval: async function(paymentId) {
+        document.getElementById('pay-status').innerText = "Approving payment...";
+        await fetch('https://pipilot-ai-6gh3.vercel.app/api/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId })
+        });
+        document.getElementById('pay-status').innerText = "Approved! Waiting for Wallet...";
+      },
+      onReadyForServerCompletion: async function(paymentId, txid) {
+        document.getElementById('pay-status').innerText = "Completing payment...";
+        await fetch('https://pipilot-ai-6gh3.vercel.app/api/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId, txid })
+        });
+        document.getElementById('pay-status').innerText = "✅ Payment Complete! Premium Unlocked!";
+        alert("✅ Payment Complete! Thank you for supporting PiPilot AI.");
+      },
+      onCancel: function(paymentId) {
+        document.getElementById('pay-status').innerText = "Payment cancelled";
+      },
+      onError: function(error, payment) {
+        alert("Payment error: " + error.message);
+      }
+    });
+  } catch(e) {
+    alert("Payment failed — make sure you're in Pi Browser and logged in: " + e.message);
+  }
+}
+// Marketplace buttons call payDemo, so make it call the real one too
+function payDemo(x) {
+  if (x === 5 || x === '5') return payWithPi(5, 'Logo Design');
+  if (x === 2 || x === '2') return payWithPi(2, 'Business Plan');
+  return payWithPi(0.1, 'PiPilot AI Premium');
+}
+</script>
