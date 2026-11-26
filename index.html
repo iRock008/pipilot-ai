@@ -78,8 +78,13 @@ async function payWithPi(amount, itemName) {
   });
 },
       onReadyForServerCompletion: function(paymentId, txid) {
-        document.getElementById('pay-status').innerText = "Ready for completion: " + txid;
-      },
+  document.getElementById('pay-status').innerText = "Payment complete! Premium unlocked!";
+  fetch('/api/complete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ paymentId: paymentId, txid: txid })
+  });
+},
       onCancel: function(paymentId) {
         document.getElementById('pay-status').innerText = "Payment cancelled";
       },
