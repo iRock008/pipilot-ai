@@ -70,9 +70,13 @@ async function payWithPi(amount, itemName) {
       metadata: { item: itemName }
     }, {
       onReadyForServerApproval: function(paymentId) {
-        document.getElementById('pay-status').innerText = "Ready for server approval: " + paymentId;
-        alert("Payment created for " + itemName + "!\nID: " + paymentId + "\n\nThis is where your backend would approve it. For now, this proves the Wallet popup works.");
-      },
+  document.getElementById('pay-status').innerText = "Approving payment...";
+  fetch('/api/approve', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ paymentId: paymentId })
+  });
+},
       onReadyForServerCompletion: function(paymentId, txid) {
         document.getElementById('pay-status').innerText = "Ready for completion: " + txid;
       },
